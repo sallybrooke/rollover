@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rollover - Daily Checklist</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #1a2332;
+            --slate: #2d3e50;
+            --sage: #7fa99b;
+            --cream: #f8f6f0;
+            --accent: #e8927c;
+            --border: #d4cfc4;
+            --text: #2d3e50;
+            --subtle: #8a9099;
+        }
+
+```
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #f8f6f0 0%, #ffffff 100%);
+        color: var(--text);
+        min-height: 100vh;
+        padding: 20px;
+        line-height: 1.6;
+    }
+
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    header {
+        text-align: center;
+        margin-bottom: 32px;
+        padding: 24px;
+        background: linear-gradient(135deg, var(--navy) 0%, var(--slate) 100%);
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(26, 35, 50, 0.15);
+    }
+
+    h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        color: white;
+        margin-bottom: 8px;
+        letter-spacing: -0.5px;
+    }
+
+    .date-display {
+        font-size: 1rem;
+        color: var(--sage);
+        font-weight: 500;
+        letter-spacing: 0.5px;
+    }
+
+    .tabs {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 24px;
+        background: white;
+        padding: 6px;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .tab {
+        flex: 1;
+        padding: 12px 20px;
+        background: none;
+        border: none;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: var(--subtle);
+        cursor: pointer;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .tab:hover {
+        background: var(--cream);
+        color: var(--text);
+    }
+
+    .tab.active {
+        background: linear-gradient(135deg, var(--sage) 0%, #6b8e7f 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(127, 169, 155, 0.3);
+    }
+
+    .tab-content {
+        display: none;
+        animation: fadeIn 0.4s ease;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .checklist-section {
+        background: white;
+        border-radius: 12px;
+        padding: 20px 24px;
+        margin-bottom: 16px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        border-left: 4px solid var(--sage);
+    }
+
+    .section-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.3rem;
+        color: var(--navy);
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .section-subtitle {
+        font-size: 0.85rem;
+        color: var(--subtle);
+        font-style: italic;
+        margin-bottom: 12px;
+    }
+
+    .task-item {
+        display: flex;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--cream);
+        transition: all 0.2s ease;
+        align-items: center;
+    }
+
+    .task-item:last-child {
+        border-bottom: none;
+    }
+
+    .task-item:hover {
+        background: var(--cream);
+        margin: 0 -12px;
+        padding-left: 12px;
+        padding-right: 12px;
+        border-radius: 8px;
+    }
+
+    .checkbox-wrapper {
+        flex-shrink: 0;
+        position: relative;
+        width: 22px;
+        height: 22px;
+    }
+
+    .checkbox-wrapper input[type="checkbox"] {
+        width: 22px;
+        height: 22px;
+        cursor: pointer;
+        appearance: none;
+        border: 2px solid var(--sage);
+        border-radius: 4px;
+        background: white;
+        transition: all 0.3s ease;
+    }
+
+    .checkbox-wrapper input[type="checkbox"]:hover {
+        border-color: var(--accent);
+        transform: scale(1.05);
+    }
+
+    .checkbox-wrapper input[type="checkbox"]:checked {
+        background: linear-gradient(135deg, var(--sage) 0%, #6b8e7f 100%);
+        border-color: var(--sage);
+    }
+
+    .checkbox-wrapper input[type="checkbox"]:checked::after {
+        content: '✓';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .task-content {
+        flex: 1;
+    }
+
+    .task-text {
+        font-size: 0.95rem;
+        color: var(--text);
+        font-weight: 400;
+    }
+
+    .task-item.completed .task-text {
+        text-decoration: line-through;
+        color: var(--subtle);
+        opacity: 0.6;
+    }
+
+    .add-task-section {
+        margin-top: 0;
+        padding-top: 16px;
+        border-top: 2px dashed var(--border);
+        background: linear-gradient(to bottom, transparent, var(--cream));
+    }
+
+    .add-task-input {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+    }
+
+    .add-task-input input {
+        flex: 1;
+        padding: 12px 16px;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+    }
+
+    .add-task-input input:focus {
+        outline: none;
+        border-color: var(--sage);
+        box-shadow: 0 0 0 3px rgba(127, 169, 155, 0.1);
+    }
+
+    .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--accent) 0%, #d67b64 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(232, 146, 124, 0.3);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(232, 146, 124, 0.4);
+    }
+
+    .btn-secondary {
+        background: white;
+        color: var(--text);
+        border: 2px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+        background: var(--cream);
+        border-color: var(--sage);
+    }
+
+    .btn-danger {
+        background: #e07667;
+        color: white;
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+
+    .btn-danger:hover {
+        background: #c85d4f;
+    }
+
+    .setup-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 20px;
+    }
+
+    .setup-card {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        border-top: 3px solid var(--sage);
+    }
+
+    .setup-card h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.25rem;
+        color: var(--navy);
+        margin-bottom: 8px;
+    }
+
+    .setup-card p {
+        color: var(--subtle);
+        font-size: 0.9rem;
+        margin-bottom: 16px;
+    }
+
+    .task-list-setup {
+        max-height: 400px;
+        overflow-y: auto;
+        margin-bottom: 12px;
+    }
+
+    .task-list-setup::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .task-list-setup::-webkit-scrollbar-track {
+        background: var(--cream);
+        border-radius: 10px;
+    }
+
+    .task-list-setup::-webkit-scrollbar-thumb {
+        background: var(--sage);
+        border-radius: 10px;
+    }
+
+    .task-list-setup .task-item {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .task-list-setup input[type="text"] {
+        flex: 1;
+        padding: 8px 12px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .task-list-setup input[type="text"]:focus {
+        outline: none;
+        border-color: var(--sage);
+    }
+
+    .day-tasks {
+        margin-bottom: 20px;
+    }
+
+    .day-tasks h4 {
+        color: var(--navy);
+        margin-bottom: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    .monthly-task-item {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 8px;
+        align-items: center;
+    }
+
+    .monthly-task-item input[type="number"] {
+        width: 60px;
+        padding: 8px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .monthly-task-item input[type="text"] {
+        flex: 1;
+        padding: 8px 12px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+        color: var(--subtle);
+    }
+
+    .checkbox-label input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+    }
+
+    .print-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: linear-gradient(135deg, var(--navy) 0%, var(--slate) 100%);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 64px;
+        height: 64px;
+        font-size: 26px;
+        cursor: pointer;
+        box-shadow: 0 8px 24px rgba(26, 35, 50, 0.3);
+        transition: all 0.3s ease;
+        z-index: 1000;
+    }
+
+    .print-btn:hover {
+        transform: scale(1.1) rotate(5deg);
+        box-shadow: 0 12px 32px rgba(26, 35, 50, 0.4);
+    }
+
+    .print-btn.hidden {
+        display: none;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--subtle);
+        font-style: italic;
+    }
+
+    .empty-state::before {
+        content: '📋';
+        display: block;
+        font-size: 4rem;
+        margin-bottom: 16px;
+    }
+
+    .blank-lines {
+        display: none;
+    }
+
+    @media print {
+        body {
+            background: white;
+            padding: 10px;
+            font-size: 10pt;
+        }
+
+        .tabs, .print-btn, .add-task-section, .btn, header h1 {
+            display: none !important;
+        }
+
+        .container {
+            max-width: 100%;
+        }
+
+        .date-display {
+            display: block !important;
+            text-align: center;
+            font-size: 13pt;
+            font-weight: bold;
+            margin: 5px 0 15px 0;
+            color: black !important;
+        }
+
+        .checklist-section {
+            box-shadow: none;
+            border-left: none;
+            border: none;
+            padding: 0;
+            margin-bottom: 10px;
+            page-break-inside: avoid;
+        }
+
+        .section-title {
+            font-size: 11pt;
+            margin-bottom: 6px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 2px;
+            font-weight: bold;
+        }
+
+        .section-subtitle {
+            display: none;
+        }
+
+        .task-item {
+            padding: 2px 0;
+            border-bottom: none;
+            min-height: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .task-item:hover {
+            background: none;
+            margin: 0;
+            padding: 2px 0;
+        }
+
+        .checkbox-wrapper {
+            margin-top: 0;
+        }
+
+        .checkbox-wrapper input[type="checkbox"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border: 1.5px solid #000;
+            border-radius: 2px;
+            background: white;
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
+            flex-shrink: 0;
+        }
+
+        .task-text {
+            font-size: 10pt;
+            margin-bottom: 0;
+            line-height: 1.2;
+        }
+
+        .task-content {
+            margin-left: 0;
+            flex: 1;
+        }
+
+        .blank-lines {
+            display: block;
+            margin-top: 12px;
+            padding-top: 8px;
+            border-top: 2px solid #000;
+        }
+
+        .blank-lines h4 {
+            font-size: 11pt;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        .blank-lines-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 20px;
+        }
+
+        .blank-line {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 5px;
+            align-items: flex-start;
+        }
+
+        .blank-line::before {
+            content: '';
+            width: 14px;
+            height: 14px;
+            border: 1.5px solid #000;
+            border-radius: 2px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .blank-line::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #999;
+            margin-top: 7px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 2rem;
+        }
+
+        .setup-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .tabs {
+            overflow-x: auto;
+        }
+    }
+</style>
+```
+
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Rollover</h1>
+            <div class="date-display" id="dateDisplay"></div>
+        </header>
+
+```
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('today')">Today's Checklist</button>
+        <button class="tab" onclick="switchTab('setup')">Setup Tasks</button>
+    </div>
+
+    <div id="todayTab" class="tab-content active">
+        <div id="todayChecklist"></div>
+    </div>
+
+    <div id="setupTab" class="tab-content">
+        <div class="setup-grid">
+            <div class="setup-card">
+                <h3>⭐ Static Tasks</h3>
+                <p>Tasks that appear every single day</p>
+                <div class="task-list-setup" id="staticTasksList"></div>
+                <div style="display: flex; gap: 8px; margin-top: 12px; align-items: center; flex-wrap: wrap;">
+                    <input type="text" id="newStaticTask" placeholder="Add a daily task..." style="flex: 1; min-width: 200px; padding: 12px 16px; border: 2px solid var(--border); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.95rem;">
+                    <label class="checkbox-label" style="margin: 0;">
+                        <input type="checkbox" id="newStaticWeekdayOnly">
+                        Weekdays only
+                    </label>
+                    <button class="btn btn-primary" onclick="addStaticTask()">Add</button>
+                </div>
+            </div>
+
+            <div class="setup-card">
+                <h3>📅 Day-Specific Tasks</h3>
+                <p>Tasks for specific days of the week</p>
+                <div class="task-list-setup" id="dayTasksList"></div>
+            </div>
+
+            <div class="setup-card">
+                <h3>📆 Monthly Tasks</h3>
+                <p>Tasks for specific dates each month (weekend tasks appear on Friday)</p>
+                <div class="task-list-setup" id="monthlyTasksList"></div>
+                <div style="margin-top: 16px;">
+                    <div class="monthly-task-item">
+                        <input type="number" id="newMonthlyDate" placeholder="Day" min="1" max="31">
+                        <input type="text" id="newMonthlyTask" placeholder="Task description...">
+                    </div>
+                    <button class="btn btn-primary" onclick="addMonthlyTask()" style="margin-top: 8px;">Add</button>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="btn btn-primary" onclick="refreshChecklist()" style="padding: 16px 32px; font-size: 1.05rem;">
+                💾 Save & Refresh Today's Checklist
+            </button>
+        </div>
+    </div>
+</div>
+
+<button class="print-btn" onclick="window.print()" title="Print Checklist">🖨️</button>
+
+<script>
+    const STORAGE_PREFIX = 'dailyChecklist_';
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    // Storage helper functions using localStorage
+    function getData(key) {
+        try {
+            const value = localStorage.getItem(STORAGE_PREFIX + key);
+            return value ? JSON.parse(value) : null;
+        } catch (e) {
+            console.error('Storage get error:', e);
+            return null;
+        }
+    }
+
+    function setData(key, value) {
+        try {
+            localStorage.setItem(STORAGE_PREFIX + key, JSON.stringify(value));
+        } catch (e) {
+            console.error('Storage set error:', e);
+        }
+    }
+
+    function deleteData(key) {
+        try {
+            localStorage.removeItem(STORAGE_PREFIX + key);
+        } catch (e) {
+            console.error('Delete error:', e);
+        }
+    }
+
+    // Initialize data structures
+    let staticTasks = [];
+    let dayTasks = {
+        Monday: [], Tuesday: [], Wednesday: [], Thursday: [], 
+        Friday: [], Saturday: [], Sunday: []
+    };
+    let monthlyTasks = [];
+    let todaysTasks = [];
+    let todayDate = new Date().toDateString();
+
+    // Load all data
+    function loadData() {
+        staticTasks = getData('staticTasks') || [];
+        dayTasks = getData('dayTasks') || {
+            Monday: [], Tuesday: [], Wednesday: [], Thursday: [], 
+            Friday: [], Saturday: [], Sunday: []
+        };
+        monthlyTasks = getData('monthlyTasks') || [];
+        
+        const storedDate = getData('todayDate');
+        const storedTasks = getData('todaysTasks');
+        
+        if (storedDate !== todayDate) {
+            generateTodaysTasks();
+        } else if (storedTasks) {
+            todaysTasks = storedTasks;
+        } else {
+            generateTodaysTasks();
+        }
+    }
+
+    // Generate today's tasks
+    function generateTodaysTasks() {
+        const today = new Date();
+        const dayName = days[today.getDay()];
+        const dayNum = today.getDay();
+        const dateNum = today.getDate();
+        const isWeekend = dayNum === 0 || dayNum === 6;
+
+        todaysTasks = [];
+
+        // Add static tasks
+        staticTasks.forEach(taskObj => {
+            const task = typeof taskObj === 'string' ? taskObj : taskObj.text;
+            const weekdayOnly = typeof taskObj === 'object' ? taskObj.weekdayOnly : false;
+            
+            if (weekdayOnly && isWeekend) {
+                return;
+            }
+            
+            todaysTasks.push({
+                id: Date.now() + Math.random(),
+                text: task,
+                completed: false,
+                type: 'static'
+            });
+        });
+
+        // Add day-specific tasks
+        if (dayTasks[dayName]) {
+            dayTasks[dayName].forEach(task => {
+                todaysTasks.push({
+                    id: Date.now() + Math.random(),
+                    text: task,
+                    completed: false,
+                    type: 'day'
+                });
+            });
+        }
+
+        // Add monthly tasks with automatic weekend→Friday logic
+        monthlyTasks.forEach(mt => {
+            const taskDate = typeof mt === 'object' ? mt.date : mt;
+            const taskText = typeof mt === 'object' ? mt.task : mt;
+            
+            let shouldShow = false;
+            
+            const scheduledDate = new Date(today.getFullYear(), today.getMonth(), taskDate);
+            const scheduledDay = scheduledDate.getDay();
+            
+            if (scheduledDay === 0 || scheduledDay === 6) {
+                let daysToSubtract = scheduledDay === 0 ? 2 : 1;
+                const fridayDate = new Date(scheduledDate);
+                fridayDate.setDate(scheduledDate.getDate() - daysToSubtract);
+                
+                if (today.toDateString() === fridayDate.toDateString()) {
+                    shouldShow = true;
+                }
+            } else {
+                shouldShow = dateNum === taskDate;
+            }
+            
+            if (shouldShow) {
+                todaysTasks.push({
+                    id: Date.now() + Math.random(),
+                    text: typeof taskText === 'object' ? taskText.task : taskText,
+                    completed: false,
+                    type: 'monthly'
+                });
+            }
+        });
+
+        // Carry over uncompleted tasks
+        const previousTasks = getData('todaysTasks');
+        if (previousTasks) {
+            previousTasks.forEach(task => {
+                if ((task.type === 'adhoc' || task.type === 'monthly') && !task.completed) {
+                    todaysTasks.push({
+                        ...task,
+                        id: Date.now() + Math.random()
+                    });
+                }
+            });
+        }
+
+        setData('todayDate', todayDate);
+        setData('todaysTasks', todaysTasks);
+    }
+
+    function updateDateDisplay() {
+        const today = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('dateDisplay').textContent = today.toLocaleDateString('en-US', options);
+    }
+
+    function renderTodayChecklist() {
+        const container = document.getElementById('todayChecklist');
+        
+        let html = '';
+
+        const staticTasksHtml = todaysTasks.filter(t => t.type === 'static');
+        const dayTasksHtml = todaysTasks.filter(t => t.type === 'day');
+        const monthlyTasksHtml = todaysTasks.filter(t => t.type === 'monthly');
+        const adhocTasksHtml = todaysTasks.filter(t => t.type === 'adhoc');
+
+        if (todaysTasks.length === 0) {
+            html += '<div class="empty-state">No recurring tasks for today! Add some below or set them up in the Setup tab.</div>';
+        }
+
+        if (staticTasksHtml.length > 0) {
+            html += '<div class="checklist-section">';
+            html += '<div class="section-title">⭐ Daily Tasks</div>';
+            html += '<div class="section-subtitle">Complete every day</div>';
+            staticTasksHtml.forEach(task => {
+                html += renderTaskItem(task);
+            });
+            html += '</div>';
+        }
+
+        if (dayTasksHtml.length > 0) {
+            html += '<div class="checklist-section">';
+            html += `<div class="section-title">📅 ${days[new Date().getDay()]} Tasks</div>`;
+            dayTasksHtml.forEach(task => {
+                html += renderTaskItem(task);
+            });
+            html += '</div>';
+        }
+
+        if (monthlyTasksHtml.length > 0) {
+            html += '<div class="checklist-section">';
+            html += '<div class="section-title">📆 Monthly Tasks</div>';
+            html += `<div class="section-subtitle">Scheduled for the ${new Date().getDate()}th</div>`;
+            monthlyTasksHtml.forEach(task => {
+                html += renderTaskItem(task);
+            });
+            html += '</div>';
+        }
+
+        if (adhocTasksHtml.length > 0) {
+            html += '<div class="checklist-section">';
+            html += '<div class="section-title">📝 Additional To-Dos</div>';
+            adhocTasksHtml.forEach(task => {
+                html += renderTaskItem(task);
+            });
+            html += '</div>';
+        }
+
+        html += '<div class="checklist-section add-task-section">';
+        html += '<div class="section-title">➕ Add New Task</div>';
+        html += '<div class="add-task-input">';
+        html += '<input type="text" id="newAdhocTask" placeholder="What else needs to be done today?">';
+        html += '<button class="btn btn-primary" onclick="addAdhocTask()">Add</button>';
+        html += '</div>';
+        html += '</div>';
+
+        html += '<div class="blank-lines">';
+        html += '<h4>Additional Notes:</h4>';
+        html += '<div class="blank-lines-grid">';
+        for (let i = 0; i < 10; i++) {
+            html += '<div class="blank-line"></div>';
+        }
+        html += '</div>';
+        html += '</div>';
+
+        container.innerHTML = html;
+    }
+
+    function renderTaskItem(task) {
+        return `
+            <div class="task-item ${task.completed ? 'completed' : ''}" data-id="${task.id}">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(${task.id})">
+                </div>
+                <div class="task-content">
+                    <div class="task-text">${task.text}</div>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderSetup() {
+        let html = '';
+        staticTasks.forEach((taskObj, index) => {
+            const task = typeof taskObj === 'string' ? taskObj : taskObj.text;
+            const weekdayOnly = typeof taskObj === 'object' ? taskObj.weekdayOnly : false;
+            
+            html += `
+                <div class="task-item">
+                    <input type="text" value="${task}" onchange="updateStaticTask(${index}, this.value)">
+                    <label class="checkbox-label">
+                        <input type="checkbox" ${weekdayOnly ? 'checked' : ''} onchange="toggleStaticWeekday(${index}, this.checked)">
+                        Weekdays
+                    </label>
+                    <button class="btn btn-danger" onclick="deleteStaticTask(${index})">✕</button>
+                </div>
+            `;
+        });
+        document.getElementById('staticTasksList').innerHTML = html;
+
+        html = '';
+        Object.keys(dayTasks).forEach(day => {
+            html += `<div class="day-tasks">`;
+            html += `<h4>${day}</h4>`;
+            dayTasks[day].forEach((task, index) => {
+                html += `
+                    <div class="task-item">
+                        <input type="text" value="${task}" onchange="updateDayTask('${day}', ${index}, this.value)">
+                        <button class="btn btn-danger" onclick="deleteDayTask('${day}', ${index})">✕</button>
+                    </div>
+                `;
+            });
+            html += `
+                <div class="add-task-input" style="margin-top: 8px;">
+                    <input type="text" id="new${day}Task" placeholder="Add ${day} task...">
+                    <button class="btn btn-primary" onclick="addDayTask('${day}')">Add</button>
+                </div>
+            `;
+            html += `</div>`;
+        });
+        document.getElementById('dayTasksList').innerHTML = html;
+
+        html = '';
+        monthlyTasks.sort((a, b) => {
+            const dateA = typeof a === 'object' ? a.date : a;
+            const dateB = typeof b === 'object' ? b.date : b;
+            return dateA - dateB;
+        }).forEach((mt, index) => {
+            const date = typeof mt === 'object' ? mt.date : mt;
+            const task = typeof mt === 'object' ? mt.task : '';
+            
+            html += `
+                <div class="monthly-task-item">
+                    <input type="number" value="${date}" min="1" max="31" onchange="updateMonthlyTaskDate(${index}, this.value)">
+                    <input type="text" value="${task}" onchange="updateMonthlyTaskText(${index}, this.value)">
+                    <button class="btn btn-danger" onclick="deleteMonthlyTask(${index})">✕</button>
+                </div>
+            `;
+        });
+        document.getElementById('monthlyTasksList').innerHTML = html;
+    }
+
+    function toggleTask(id) {
+        const task = todaysTasks.find(t => t.id === id);
+        if (task) {
+            task.completed = !task.completed;
+            setData('todaysTasks', todaysTasks);
+            renderTodayChecklist();
+        }
+    }
+
+    function addAdhocTask() {
+        const input = document.getElementById('newAdhocTask');
+        const text = input.value.trim();
+        if (text) {
+            todaysTasks.push({
+                id: Date.now() + Math.random(),
+                text: text,
+                completed: false,
+                type: 'adhoc'
+            });
+            setData('todaysTasks', todaysTasks);
+            input.value = '';
+            renderTodayChecklist();
+        }
+    }
+
+    function addStaticTask() {
+        const input = document.getElementById('newStaticTask');
+        const weekdayCheckbox = document.getElementById('newStaticWeekdayOnly');
+        const text = input.value.trim();
+        if (text) {
+            staticTasks.push({
+                text: text,
+                weekdayOnly: weekdayCheckbox.checked
+            });
+            setData('staticTasks', staticTasks);
+            input.value = '';
+            weekdayCheckbox.checked = false;
+            renderSetup();
+        }
+    }
+
+    function updateStaticTask(index, value) {
+        if (typeof staticTasks[index] === 'string') {
+            staticTasks[index] = { text: value, weekdayOnly: false };
+        } else {
+            staticTasks[index].text = value;
+        }
+        setData('staticTasks', staticTasks);
+    }
+
+    function toggleStaticWeekday(index, checked) {
+        if (typeof staticTasks[index] === 'string') {
+            staticTasks[index] = { text: staticTasks[index], weekdayOnly: checked };
+        } else {
+            staticTasks[index].weekdayOnly = checked;
+        }
+        setData('staticTasks', staticTasks);
+    }
+
+    function deleteStaticTask(index) {
+        staticTasks.splice(index, 1);
+        setData('staticTasks', staticTasks);
+        renderSetup();
+    }
+
+    function addDayTask(day) {
+        const input = document.getElementById(`new${day}Task`);
+        const text = input.value.trim();
+        if (text) {
+            dayTasks[day].push(text);
+            setData('dayTasks', dayTasks);
+            input.value = '';
+            renderSetup();
+        }
+    }
+
+    function updateDayTask(day, index, value) {
+        dayTasks[day][index] = value;
+        setData('dayTasks', dayTasks);
+    }
+
+    function deleteDayTask(day, index) {
+        dayTasks[day].splice(index, 1);
+        setData('dayTasks', dayTasks);
+        renderSetup();
+    }
+
+    function addMonthlyTask() {
+        const dateInput = document.getElementById('newMonthlyDate');
+        const taskInput = document.getElementById('newMonthlyTask');
+        const date = parseInt(dateInput.value);
+        const task = taskInput.value.trim();
+        
+        if (date >= 1 && date <= 31 && task) {
+            monthlyTasks.push({ 
+                date: date, 
+                task: task
+            });
+            setData('monthlyTasks', monthlyTasks);
+            dateInput.value = '';
+            taskInput.value = '';
+            renderSetup();
+        }
+    }
+
+    function updateMonthlyTaskDate(index, value) {
+        if (typeof monthlyTasks[index] !== 'object') {
+            monthlyTasks[index] = { date: parseInt(value), task: '' };
+        } else {
+            monthlyTasks[index].date = parseInt(value);
+        }
+        setData('monthlyTasks', monthlyTasks);
+        renderSetup();
+    }
+
+    function updateMonthlyTaskText(index, value) {
+        if (typeof monthlyTasks[index] !== 'object') {
+            monthlyTasks[index] = { date: 1, task: value };
+        } else {
+            monthlyTasks[index].task = value;
+        }
+        setData('monthlyTasks', monthlyTasks);
+    }
+
+    function deleteMonthlyTask(index) {
+        monthlyTasks.splice(index, 1);
+        setData('monthlyTasks', monthlyTasks);
+        renderSetup();
+    }
+
+    function refreshChecklist() {
+        generateTodaysTasks();
+        switchTab('today');
+        alert('✓ Checklist refreshed with your updated tasks!');
+    }
+
+    function switchTab(tab) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        
+        const printBtn = document.querySelector('.print-btn');
+        
+        if (tab === 'today') {
+            document.querySelector('.tab:nth-child(1)').classList.add('active');
+            document.getElementById('todayTab').classList.add('active');
+            printBtn.classList.remove('hidden');
+            renderTodayChecklist();
+        } else {
+            document.querySelector('.tab:nth-child(2)').classList.add('active');
+            document.getElementById('setupTab').classList.add('active');
+            printBtn.classList.add('hidden');
+            renderSetup();
+        }
+    }
+
+    function init() {
+        updateDateDisplay();
+        loadData();
+        renderTodayChecklist();
+        renderSetup();
+        
+        window.addEventListener('focus', () => {
+            const currentDate = new Date().toDateString();
+            if (currentDate !== todayDate) {
+                todayDate = currentDate;
+                generateTodaysTasks();
+                updateDateDisplay();
+                renderTodayChecklist();
+            }
+        });
+    }
+
+    init();
+</script>
+```
+
+</body>
+</html>
